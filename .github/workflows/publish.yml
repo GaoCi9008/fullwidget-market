@@ -1,5 +1,6 @@
 # Every change on main: pack the widgets and publish the website, index.json and the .fwz files
-# to GitHub Pages.
+# to GitHub Pages. While the repository is private (free accounts have no Pages there), it only
+# checks that everything still builds.
 name: 發佈市場 / Publish
 on:
   push:
@@ -23,12 +24,15 @@ jobs:
         with:
           node-version: 22
       - run: node scripts/build.mjs
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
+      - if: ${{ !github.event.repository.private }}
+        uses: actions/configure-pages@v5
+      - if: ${{ !github.event.repository.private }}
+        uses: actions/upload-pages-artifact@v3
         with:
           path: _site
   deploy:
     needs: build
+    if: ${{ !github.event.repository.private }}
     runs-on: ubuntu-latest
     environment:
       name: github-pages

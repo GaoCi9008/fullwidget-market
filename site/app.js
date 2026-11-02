@@ -13,7 +13,6 @@ const REPO = (() => {
 const WORDS = {
   "組件市場": ["组件市场", "Widget market"],
   "投稿組件": ["投稿组件", "Submit a widget"],
-  "給 FullWidget 的桌面組件，由大家投稿": ["给 FullWidget 的桌面组件，由大家投稿", "Desktop widgets for FullWidget, made by everyone"],
   // [繁, 简, English] where the key is only a name
   "SUB": ["在 FullWidget 控制中心的<b>「添加組件 → 線上」</b>一鍵安裝；也可以下載 .fwz 檔案，雙擊安裝。", "在 FullWidget 控制中心的<b>「添加组件 → 在线」</b>一键安装；也可以下载 .fwz 文件，双击安装。", "Install in one click from the FullWidget Control Center (<b>Add widgets → Online</b>), or download the .fwz file and double-click it."],
   "搜尋組件": ["搜索组件", "Search widgets"],
@@ -118,7 +117,7 @@ function render() {
   document.documentElement.lang = lang === "en" ? "en" : lang === "zh-CN" ? "zh-Hans" : "zh-Hant";
   document.title = `FullWidget ${t("組件市場")}`;
   $("t-market").textContent = t("組件市場");
-  $("t-title").textContent = t("給 FullWidget 的桌面組件，由大家投稿");
+  $("t-title").textContent = t("組件市場");
   $("t-sub").innerHTML = t("SUB");
   $("t-foot").textContent = t("組件由投稿者提供，經過自動檢查和維護者審核。安裝前請看清楚它要的權限。");
   $("l-submit").textContent = t("投稿組件");

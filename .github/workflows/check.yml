@@ -1,0 +1,21 @@
+# Every pull request: review the widgets it adds or changes, and make sure the market still builds.
+# Runs with read-only access and never runs the widgets' own code.
+name: 檢查組件 / Check widgets
+on:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: 檢查改動的組件 / Check the changed widgets
+        run: node scripts/check.mjs --against origin/${{ github.base_ref }}
+      - name: 試著打包全部組件 / Build everything
+        run: node scripts/build.mjs

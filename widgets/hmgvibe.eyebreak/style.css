@@ -1,0 +1,32 @@
+body { container-type: size; display: flex; align-items: center; gap: 1rem; }
+[hidden] { display: none !important; }
+
+.ring { flex: none; width: min(100cqh, 40cqw, 120px); aspect-ratio: 1; transform: rotate(-90deg); }
+.ring .track { fill: none; stroke: var(--w-track); stroke-width: 6; }
+/* updated once a second: no transition, so the card isn't animating all the time */
+.ring .arc { fill: none; stroke: var(--w-accent); stroke-width: 6; stroke-linecap: round; stroke-dasharray: 100; }
+.ring .eye { fill: none; stroke: var(--w-fg-muted); stroke-width: 3; stroke-linejoin: round; transform: rotate(90deg); transform-origin: 50px 50px; }
+.ring .pupil { fill: var(--w-fg-muted); }
+body[data-mode="rest"] .ring .eye { stroke: var(--w-accent); }
+body[data-mode="rest"] .ring .pupil { fill: var(--w-accent); }
+body[data-mode="paused"] .ring .arc { stroke: var(--w-fg-faint); }
+
+.info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.15rem; }
+.time { font-size: min(2.2rem, 30cqh); line-height: 1.05; }
+body[data-mode="rest"] .time::after { content: " s"; font-size: 0.4em; color: var(--w-fg-muted); }
+.hint { font-size: 0.8rem; color: var(--w-fg-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-height: 1.1em; }
+.btns { display: flex; gap: 4px; margin-top: 0.35rem; }
+.btns .w-btn { white-space: nowrap; }
+@container (max-height: 110px) { .hint { display: none; } }
+@container (max-width: 230px) { .ring { display: none; } }
+
+/* ── 玻璃上的字: no ring, the time large ── */
+html[data-theme="type"] .ring { display: none; }
+html[data-theme="type"] .time { font-size: min(3.4rem, 40cqh); }
+html[data-theme="type"] .label, html[data-theme="type"] .hint { color: var(--w-fg); font-weight: 600; }
+
+/* ── 書桌上的紙: an ink circle ── */
+html[data-theme="paper"] .ring .track { stroke: var(--w-rule); stroke-width: 2; }
+html[data-theme="paper"] .ring .arc { stroke: var(--w-fg); stroke-width: 3; }
+html[data-theme="paper"] body[data-mode="rest"] .ring .arc { stroke: var(--w-accent); }
+html[data-theme="paper"] .time { font-family: var(--w-font-num); }

@@ -1,0 +1,28 @@
+{
+  "id": "hmgvibe.eyebreak",
+  "name": { "zh-TW": "護眼提醒", "zh-CN": "护眼提醒", "en": "Eye break" },
+  "description": { "zh-TW": "每 20 分鐘提醒你看遠處 20 秒（20-20-20 法則）", "zh-CN": "每 20 分钟提醒你看远处 20 秒（20-20-20 法则）", "en": "Every 20 minutes, a reminder to look far away for 20 seconds (the 20-20-20 rule)" },
+  "version": "1.0.0",
+  "author": "hmgvibe",
+  "entry": "index.html",
+  "icon": "icon.svg",
+  "category": "productivity",
+  "preview": "preview/{theme}.{lang}.webp",
+  "size": { "width": 280, "height": 140, "minWidth": 180, "minHeight": 90, "maxWidth": 700, "maxHeight": 400, "grow": 1 },
+  "permissions": ["notify"],
+  "settings": [
+    { "key": "interval", "type": "select", "label": { "zh-TW": "多久休息一次", "zh-CN": "多久休息一次", "en": "Break every" }, "default": 20,
+      "options": [
+        { "value": 20, "label": { "zh-TW": "20 分鐘", "zh-CN": "20 分钟", "en": "20 minutes" } },
+        { "value": 30, "label": { "zh-TW": "30 分鐘", "zh-CN": "30 分钟", "en": "30 minutes" } },
+        { "value": 45, "label": { "zh-TW": "45 分鐘", "zh-CN": "45 分钟", "en": "45 minutes" } },
+        { "value": 60, "label": { "zh-TW": "1 小時", "zh-CN": "1 小时", "en": "1 hour" } }
+      ] },
+    { "key": "rest", "type": "select", "label": { "zh-TW": "每次休息多久", "zh-CN": "每次休息多久", "en": "Each break lasts" }, "default": 20,
+      "options": [
+        { "value": 20, "label": { "zh-TW": "20 秒", "zh-CN": "20 秒", "en": "20 seconds" } },
+        { "value": 60, "label": { "zh-TW": "1 分鐘", "zh-CN": "1 分钟", "en": "1 minute" } },
+        { "value": 300, "label": { "zh-TW": "5 分鐘", "zh-CN": "5 分钟", "en": "5 minutes" } }
+      ] }
+  ]
+}

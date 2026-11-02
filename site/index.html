@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DeskWidgets 組件市場</title>
+  <meta name="description" content="DeskWidgets 的桌面組件，由大家投稿。在控制中心一鍵安裝，或下載 .dwz 檔案。">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="top">
+    <a class="brand" href="./">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><rect x="2" y="2" width="13" height="13" rx="3.9" fill="#4cc9f0"/><rect x="17" y="2" width="13" height="13" rx="3.9" fill="#9b5de5"/><rect x="2" y="17" width="13" height="13" rx="3.9" fill="#ffd166"/><rect x="17" y="17" width="13" height="13" rx="3.9" fill="#06d6a0"/></svg>
+      <span><b>DeskWidgets</b> <span id="t-market">組件市場</span></span>
+    </a>
+    <nav class="links">
+      <a id="l-submit" href="#">投稿組件</a>
+      <a id="l-repo" href="#">GitHub</a>
+      <div class="langs" role="group" aria-label="Language">
+        <button data-lang="zh-TW">繁</button><button data-lang="zh-CN">简</button><button data-lang="en">EN</button>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <h1 id="t-title">給 DeskWidgets 的桌面組件，由大家投稿</h1>
+      <p id="t-sub">在 DeskWidgets 控制中心的「添加組件 → 線上」一鍵安裝；也可以下載 .dwz 檔案，雙擊安裝。</p>
+    </section>
+
+    <section class="bar">
+      <label class="search">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6"/><path d="M15 15l5 5"/></svg>
+        <input id="q" type="search" autocomplete="off" spellcheck="false">
+      </label>
+      <div class="seg" id="themes" role="group"></div>
+    </section>
+    <div class="chips" id="chips"></div>
+
+    <section class="gallery" id="gallery" aria-live="polite"></section>
+    <div class="state" id="state"></div>
+  </main>
+
+  <footer class="foot">
+    <p id="t-foot">組件由投稿者提供，經過自動檢查和維護者審核。安裝前請看清楚它要的權限。</p>
+    <p class="foot-links"><a id="f-guide" href="#">如何投稿</a> · <a id="f-issues" href="#">回報問題</a> · <a id="f-index" href="index.json">index.json</a></p>
+  </footer>
+
+  <dialog id="detail"></dialog>
+  <script src="app.js"></script>
+</body>
+</html>

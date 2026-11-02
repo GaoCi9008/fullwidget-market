@@ -1,0 +1,13 @@
+{
+  "_": "Sample content for the widgets' preview pictures (DeskWidgets build/make-previews.mjs --from market/widgets).",
+  "hmgvibe.proverb": {
+    "script": {
+      "zh-TW": "offset = ((list.findIndex((x) => x[0].startsWith('千里之行')) - dayNumber()) % list.length + list.length) % list.length; show();",
+      "zh-CN": "offset = ((list.findIndex((x) => x[0].startsWith('千里之行')) - dayNumber()) % list.length + list.length) % list.length; show();",
+      "en": "offset = ((list.findIndex((x) => x[0].startsWith('A journey')) - dayNumber()) % list.length + list.length) % list.length; show();"
+    }
+  },
+  "hmgvibe.eyebreak": {
+    "script": "s = { mode: 'work', until: Date.now() + (12 * 60 + 34) * 1000, left: 0 }; render();"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "id": "hmgvibe.proverb",
+  "name": { "zh-TW": "每日一句", "zh-CN": "每日一句", "en": "Saying of the day" },
+  "description": { "zh-TW": "每天一句古人的話，點一下換下一句", "zh-CN": "每天一句古人的话，点一下换下一句", "en": "A classic saying for each day; click for another" },
+  "version": "1.0.0",
+  "author": "hmgvibe",
+  "entry": "index.html",
+  "icon": "icon.svg",
+  "category": "info",
+  "preview": "preview/{theme}.{lang}.webp",
+  "size": { "width": 320, "height": 150, "minWidth": 180, "minHeight": 90, "maxWidth": 900, "maxHeight": 500, "grow": 1 },
+  "permissions": [],
+  "settings": [
+    { "key": "source", "type": "toggle", "label": { "zh-TW": "顯示出處", "zh-CN": "显示出处", "en": "Show the source" }, "default": true }
+  ]
+}

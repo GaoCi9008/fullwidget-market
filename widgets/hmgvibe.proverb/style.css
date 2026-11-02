@@ -1,0 +1,18 @@
+body { display: flex; }
+[hidden] { display: none !important; }
+
+.q { flex: 1; min-width: 0; margin: 0; display: flex; flex-direction: column; justify-content: center; gap: 0.5rem; overflow: hidden; cursor: pointer; }
+.q blockquote { margin: 0; font-size: 1.3rem; line-height: 1.45; text-wrap: balance; overflow-wrap: break-word; }
+.q figcaption { flex: none; font-size: 0.8rem; color: var(--w-fg-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.q figcaption::before { content: "— "; }
+
+/* ── 量被畫出來: an accent quotation bar ── */
+html:not([data-theme="type"]):not([data-theme="paper"]) .q { padding-left: 0.9rem; border-left: 2px solid var(--w-accent); }
+
+/* ── 玻璃上的字: the words straight on the wallpaper ── */
+html[data-theme="type"] .q blockquote { font-family: var(--w-font-display); font-weight: 600; line-height: 1.3; letter-spacing: -0.01em; }
+html[data-theme="type"] .q figcaption { color: var(--w-fg); opacity: 0.8; font-weight: 600; }
+
+/* ── 書桌上的紙: set in a book face, the source in italics ── */
+html[data-theme="paper"] .q blockquote { font-family: var(--w-font-title); }
+html[data-theme="paper"] .q figcaption { font-family: var(--w-font-title); font-style: italic; color: var(--w-accent); }

@@ -1,4 +1,4 @@
-// DeskWidgets 組件市場: reads index.json (built by scripts/build.mjs) and shows it.
+// FullWidget 組件市場: reads index.json (built by scripts/build.mjs) and shows it.
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 
@@ -6,16 +6,16 @@ const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<
 const REPO = (() => {
   const m = location.hostname.match(/^([a-z0-9-]+)\.github\.io$/i);
   const repo = location.pathname.split("/").filter(Boolean)[0];
-  return m && repo ? `https://github.com/${m[1]}/${repo}` : "https://github.com/hmgvibe/deskwidgets-market";
+  return m && repo ? `https://github.com/${m[1]}/${repo}` : "https://github.com/hmgvibe/fullwidget-market";
 })();
 
 // ── words ──
 const WORDS = {
   "組件市場": ["组件市场", "Widget market"],
   "投稿組件": ["投稿组件", "Submit a widget"],
-  "給 DeskWidgets 的桌面組件，由大家投稿": ["给 DeskWidgets 的桌面组件，由大家投稿", "Desktop widgets for DeskWidgets, made by everyone"],
+  "給 FullWidget 的桌面組件，由大家投稿": ["给 FullWidget 的桌面组件，由大家投稿", "Desktop widgets for FullWidget, made by everyone"],
   // [繁, 简, English] where the key is only a name
-  "SUB": ["在 DeskWidgets 控制中心的<b>「添加組件 → 線上」</b>一鍵安裝；也可以下載 .dwz 檔案，雙擊安裝。", "在 DeskWidgets 控制中心的<b>「添加组件 → 在线」</b>一键安装；也可以下载 .dwz 文件，双击安装。", "Install in one click from the DeskWidgets Control Center (<b>Add widgets → Online</b>), or download the .dwz file and double-click it."],
+  "SUB": ["在 FullWidget 控制中心的<b>「添加組件 → 線上」</b>一鍵安裝；也可以下載 .fwz 檔案，雙擊安裝。", "在 FullWidget 控制中心的<b>「添加组件 → 在线」</b>一键安装；也可以下载 .fwz 文件，双击安装。", "Install in one click from the FullWidget Control Center (<b>Add widgets → Online</b>), or download the .fwz file and double-click it."],
   "搜尋組件": ["搜索组件", "Search widgets"],
   "全部": ["全部", "All"],
   "時間": ["时间", "Time"], "天氣": ["天气", "Weather"], "系統": ["系统", "System"], "效率": ["效率", "Productivity"],
@@ -30,13 +30,13 @@ const WORDS = {
   "沒有符合的組件": ["没有符合的组件", "No widgets match"],
   "還沒有組件，歡迎第一個投稿": ["还没有组件，欢迎第一个投稿", "No widgets yet. Be the first to submit one"],
   "不需要權限": ["不需要权限", "No permissions"],
-  "下載 .dwz": ["下载 .dwz", "Download .dwz"],
+  "下載 .fwz": ["下载 .fwz", "Download .fwz"],
   "原始碼": ["源代码", "Source"],
   "它可以做什麼": ["它可以做什么", "What it may do"],
   "只顯示自己的內容，不能連網，也讀不到你電腦上的資訊。": ["只显示自己的内容，不能联网，也读不到你电脑上的信息。", "It shows only its own content: no network, and nothing from your PC."],
   "版本": ["版本", "Version"], "大小": ["大小", "Size"], "更新": ["更新", "Updated"], "檔案": ["文件", "Files"], "作者": ["作者", "Author"],
-  "INSTALL_HINT": ["在 DeskWidgets 控制中心 →「添加組件」→「線上」可以直接安裝。", "在 DeskWidgets 控制中心 →「添加组件」→「在线」可以直接安装。", "Or install it straight from the DeskWidgets Control Center: Add widgets → Online."],
-  "需要 DeskWidgets 1.1.0 以上": ["需要 DeskWidgets 1.1.0 以上", "Needs DeskWidgets 1.1.0 or later"],
+  "INSTALL_HINT": ["在 FullWidget 控制中心 →「添加組件」→「線上」可以直接安裝。", "在 FullWidget 控制中心 →「添加组件」→「在线」可以直接安装。", "Or install it straight from the FullWidget Control Center: Add widgets → Online."],
+  "需要 FullWidget 1.1.0 以上": ["需要 FullWidget 1.1.0 以上", "Needs FullWidget 1.1.0 or later"],
   "關閉": ["关闭", "Close"],
   // permissions
   "讀取系統資訊": ["读取系统信息", "Read system info"], "處理器、記憶體、網速、磁碟和電池的使用情況。": ["处理器、内存、网速、磁盘和电池的使用情况。", "CPU, memory, network speed, drives and battery."],
@@ -86,7 +86,7 @@ let data = null, cat = null, query = "";
 let theme = (() => { try { return localStorage.getItem("theme") || "instrument"; } catch { return "instrument"; } })();
 const remember = (k, v) => { try { localStorage.setItem(k, v); } catch { } };
 
-/** The preview picture for a widget in the chosen theme and language, falling back like DeskWidgets does. */
+/** The preview picture for a widget in the chosen theme and language, falling back like FullWidget does. */
 function previewOf(w, th = theme) {
   if (!w.preview) return null;
   const want = (thm, l) => w.preview.replace("{theme}", thm).replace("{lang}", l);
@@ -116,9 +116,9 @@ function card(w) {
 
 function render() {
   document.documentElement.lang = lang === "en" ? "en" : lang === "zh-CN" ? "zh-Hans" : "zh-Hant";
-  document.title = `DeskWidgets ${t("組件市場")}`;
+  document.title = `FullWidget ${t("組件市場")}`;
   $("t-market").textContent = t("組件市場");
-  $("t-title").textContent = t("給 DeskWidgets 的桌面組件，由大家投稿");
+  $("t-title").textContent = t("給 FullWidget 的桌面組件，由大家投稿");
   $("t-sub").innerHTML = t("SUB");
   $("t-foot").textContent = t("組件由投稿者提供，經過自動檢查和維護者審核。安裝前請看清楚它要的權限。");
   $("l-submit").textContent = t("投稿組件");
@@ -161,9 +161,9 @@ function openDetail(id) {
         <div><dt>SHA-256</dt><dd class="num" title="${esc(w.sha256)}">${esc(w.sha256.slice(0, 16))}…</dd></div>
       </dl>
       <div class="d-actions">
-        <a class="btn primary" href="${esc(w.package)}" download><svg viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>${esc(t("下載 .dwz"))}</a>
+        <a class="btn primary" href="${esc(w.package)}" download><svg viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>${esc(t("下載 .fwz"))}</a>
         <a class="btn" href="${REPO}/tree/main/widgets/${encodeURIComponent(w.id)}" target="_blank" rel="noopener">${esc(t("原始碼"))}</a>
-        <span class="d-hint">${esc(t("INSTALL_HINT"))} ${esc(t("需要 DeskWidgets 1.1.0 以上"))}</span>
+        <span class="d-hint">${esc(t("INSTALL_HINT"))} ${esc(t("需要 FullWidget 1.1.0 以上"))}</span>
       </div>
     </div>`;
   if (!$("detail").open) $("detail").showModal();

@@ -1,6 +1,6 @@
-// Builds the market website into _site/: the pages, index.json (the catalog DeskWidgets reads),
-// one .dwz package per widget, and each widget's icon and preview pictures.
-//   node scripts/build.mjs [--base-url https://hmgvibe.github.io/deskwidgets-market/]
+// Builds the market website into _site/: the pages, index.json (the catalog FullWidget reads),
+// one .fwz package per widget, and each widget's icon and preview pictures.
+//   node scripts/build.mjs [--base-url https://hmgvibe.github.io/fullwidget-market/]
 import fs from "node:fs";
 import path from "node:path";
 import { ROOT, WIDGETS, checkWidget, widgetFolders, git, zip, sha256 } from "./lib.mjs";
@@ -21,7 +21,7 @@ for (const folder of widgetFolders()) {
   const m = r.manifest, dir = path.join(WIDGETS, folder);
   const files = r.files.map((f) => ({ rel: f.rel, data: fs.readFileSync(path.join(dir, f.rel)) }));
   const pkg = zip(files);
-  const pkgName = `${m.id}-${m.version}.dwz`;
+  const pkgName = `${m.id}-${m.version}.fwz`;
   fs.writeFileSync(path.join(OUT, "packages", pkgName), pkg);
 
   // icon and pictures, for the website and the control center
@@ -66,7 +66,7 @@ if (failed) {
   process.exit(1);
 }
 
-const index = { format: 1, name: "DeskWidgets 組件市場", updated: new Date().toISOString(), widgets };
+const index = { format: 1, name: "FullWidget 組件市場", updated: new Date().toISOString(), widgets };
 fs.writeFileSync(path.join(OUT, "index.json"), JSON.stringify(index, null, 1));
 // the website itself
 fs.cpSync(path.join(ROOT, "site"), OUT, { recursive: true });

@@ -12,7 +12,7 @@ const hhmm = (ms) => new Intl.DateTimeFormat(widget.locale, { hour: "2-digit", m
 
 function save() { widget.storage.set("state", s); }
 
-/** The Windows notification is booked with DeskWidgets, so it comes even if this widget is hidden. */
+/** The Windows notification is booked with FullWidget, so it comes even if this widget is hidden. */
 function book() {
   widget.notify.cancel("break").catch(() => {});
   if (s.mode !== "work") return;

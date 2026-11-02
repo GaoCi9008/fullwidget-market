@@ -19,7 +19,7 @@ const REFUSED = new Set([".exe", ".dll", ".com", ".bat", ".cmd", ".ps1", ".psm1"
   ".msi", ".msp", ".scr", ".cpl", ".sys", ".jar", ".sh", ".lnk", ".url", ".reg", ".inf", ".so", ".dylib", ".appref-ms"]);
 export const LIMITS = { bytes: 5 * 1024 * 1024, files: 300 };
 
-/** widget.json may have // comments and trailing commas, as DeskWidgets allows. */
+/** widget.json may have // comments and trailing commas, as FullWidget allows. */
 export function parseJsonc(text) {
   text = text.replace(/^﻿/, ""); // a byte-order mark, as Notepad sometimes saves
   let out = "", i = 0, inStr = false;
@@ -85,7 +85,8 @@ export function checkWidget(folder, { published } = {}) {
   if (typeof m.id !== "string" || !ID.test(m.id)) errors.push(`id「${m.id}」不合規則：小寫英文、數字和 . _ -，2–64 個字元 / bad id`);
   else {
     if (m.id !== folder) errors.push(`資料夾名稱要和 id 一樣：widgets/${m.id}/ / the folder must be named after the id`);
-    if (m.id.startsWith("deskwidgets.")) errors.push("deskwidgets. 開頭的 id 留給內建組件 / ids starting with deskwidgets. are reserved");
+    for (const prefix of ["fullwidget.", "deskwidgets."]) // deskwidgets.: the built-in ids before the rename
+      if (m.id.startsWith(prefix)) errors.push(`${prefix} 開頭的 id 留給內建組件 / ids starting with ${prefix} are reserved`);
     if (m.id.startsWith("user.")) errors.push("user. 開頭的 id 是本機自己寫的組件用的，請改成「你的 GitHub 帳號.組件名」 / user. is for local widgets; use <github-name>.<widget>");
     if (!m.id.includes(".")) errors.push("id 要寫成「你的 GitHub 帳號.組件名」，例如 octocat.clock / the id must look like <github-name>.<widget>");
   }
@@ -107,7 +108,7 @@ export function checkWidget(folder, { published } = {}) {
       else if (!HOST.test(h)) errors.push(`權限 ${p} 的網址看不懂 / bad host in ${p}`);
       continue;
     }
-    errors.push(`DeskWidgets 不認識的權限「${p}」/ unknown permission`);
+    errors.push(`FullWidget 不認識的權限「${p}」/ unknown permission`);
   }
   if ((perms || []).includes("shell.launch")) warnings.push("⚠ shell.launch：可以打開電腦上的程式和檔案 / may open programs and files");
 
@@ -155,7 +156,7 @@ export function git(...args) {
   catch { return ""; }
 }
 
-// ── .dwz: a zip of the widget folder ──
+// ── .fwz: a zip of the widget folder ──
 
 const CRC = new Int32Array(256).map((_, n) => { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1; return c; });
 function crc32(buf) { let c = -1; for (const b of buf) c = CRC[(c ^ b) & 0xff] ^ (c >>> 8); return (c ^ -1) >>> 0; }

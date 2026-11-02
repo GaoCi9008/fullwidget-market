@@ -2,9 +2,9 @@
 
 [English below](#english)
 
-## 1. 先在 DeskWidgets 裏做好
+## 1. 先在 FullWidget 裏做好
 
-在 DeskWidgets 控制中心按「添加組件 → 新建組件」，照「開發文檔」寫好組件，在桌面上實際用過。三套主題（量被畫出來、玻璃上的字、書桌上的紙）都看一遍，拉大縮小也看一遍。
+在 FullWidget 控制中心按「添加組件 → 新建組件」，照「開發文檔」寫好組件，在桌面上實際用過。三套主題（量被畫出來、玻璃上的字、書桌上的紙）都看一遍，拉大縮小也看一遍。
 
 ## 2. 準備給市場
 
@@ -39,7 +39,7 @@
 
 ## English
 
-1. **Build it in DeskWidgets first.** Control Center → Add widgets → New widget, follow the developer guide, and use it on your desktop. Look at it in all three themes, and at small and large sizes.
+1. **Build it in FullWidget first.** Control Center → Add widgets → New widget, follow the developer guide, and use it on your desktop. Look at it in all three themes, and at small and large sizes.
 2. **Get it ready.**
    - Change the **id** to `<your-github-name>.<widget>`, e.g. `octocat.weather-bar` (lowercase letters, digits and `. _ -`; never change it after publishing).
    - Give **name** and **description** in `zh-TW`, `zh-CN` and `en` if you can.

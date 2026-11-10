@@ -100,18 +100,23 @@ function paint() {
     $("next").textContent = "该喝水啦！";
     if (!quietNow()) {
       if (!paint._chimed) { paint._chimed = true; chime(); }   // 到点只响一次
-      widget.notify({
-        title: "喝水提醒 ☆",
-        body: (isMl
-          ? `今天已 ${fmt(cups)} / ${fmt(g)} 毫升，再喝一口嘛～`
-          : `今天已经 ${cups} 杯啦，再喝一杯嘛～`) + `\n💧 ${tip()}`,
-        tag: TAG,
-      });
+      // 到点只弹一次通知：每 30 秒刷新会重复进这里，用过或已预约过都不再弹
+      if (!paint._notified && !paint._scheduled) {
+        paint._notified = true;
+        widget.notify({
+          title: "喝水提醒 ☆",
+          body: (isMl
+            ? `今天已 ${fmt(cups)} / ${fmt(g)} 毫升，再喝一口嘛～`
+            : `今天已经 ${cups} 杯啦，再喝一杯嘛～`) + `\n💧 ${tip()}`,
+          tag: TAG,
+        });
+      }
     }
   } else {
     const m = Math.ceil(left / MIN);
     $("next").textContent = m >= 60 ? `${Math.floor(m / 60)} 时 ${m % 60} 分后` : `${m} 分后`;
-    paint._chimed = false;   // 重新计时后允许下一次到点再响
+    paint._chimed = false;    // 重新计时后允许下一次到点再响
+    paint._notified = false;  // 重新计时后允许下一次到点再弹
   }
 }
 
@@ -119,8 +124,10 @@ function schedule() {
   // 预约到点通知；FullWidget 计时，页面暂停也准时。每次喝水/改设置都会重新预约。
   const at = lastDrink + intervalMs();
   if (!quietNow() && at > Date.now()) {
+    paint._scheduled = true;
     widget.notify({ title: "喝水提醒 ☆", body: `该喝杯水啦，主人～不喝水的话，我会担心你的哦💧\n💧 ${tip()}`, at, tag: TAG });
   } else {
+    paint._scheduled = false;
     widget.notify.cancel(TAG);
   }
 }

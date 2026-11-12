@@ -220,9 +220,9 @@ function schedule() {
 function tick() {
   // 跨天自动清零
   if (day !== today()) { day = today(); ml = 0; widget.storage.set("intake", { day, ml }); }
-  // 语言变了就重排一次，已预约的通知换成新语言
-  if (paint._bookedLang && paint._bookedLang !== widget.locale) schedule();
   paint();
+  // 语言变了就重排一次，已预约的通知换成新语言（放在 paint 之后，免得吞掉该弹的提醒）
+  if (paint._bookedLang && paint._bookedLang !== widget.locale) schedule();
 }
 
 widget.storage.get("intake").then((saved) => {
@@ -249,6 +249,7 @@ widget.storage.get("intake").then((saved) => {
 });
 
 $("drink").addEventListener("click", () => {
+  if (day !== today()) { day = today(); ml = 0; }   // 刚过零点还没刷新：先换到新的一天，别记到昨天
   ml += cupMl();
   lastDrink = Date.now();
   widget.storage.set("intake", { day, ml });
@@ -260,6 +261,7 @@ $("drink").addEventListener("click", () => {
 
 // 重置今日：清零计数，倒计时重新开始
 $("reset").addEventListener("click", () => {
+  if (day !== today()) { day = today(); }
   ml = 0;
   lastDrink = Date.now();
   widget.storage.set("intake", { day, ml });

@@ -9,6 +9,43 @@ let day = "";
 let lastDrink = 0;
 let timer = null;
 
+// ── 界面文案：繁中 / 简中 / 英文 ──────────────────────────
+const TPL = {
+  title: { "zh-TW": "喝水提醒", "zh-CN": "喝水提醒", en: "Water Reminder" },
+  due: { "zh-TW": "該喝水啦！", "zh-CN": "该喝水啦！", en: "Time to drink!" },
+  inMin: { "zh-TW": "{n} 分後", "zh-CN": "{n} 分后", en: "in {n} min" },
+  inHour: { "zh-TW": "{h} 時 {m} 分後", "zh-CN": "{h} 时 {m} 分后", en: "in {h} h {m} min" },
+  goalCup: { "zh-TW": "/ {n} 杯", "zh-CN": "/ {n} 杯", en: "/ {n} cups" },
+  goalMl: { "zh-TW": "/ {n} 毫升", "zh-CN": "/ {n} 毫升", en: "/ {n} ml" },
+  drinkCup: { "zh-TW": "喝水了", "zh-CN": "喝水了", en: "I drank" },
+  drinkMl: { "zh-TW": "+{n} 毫升", "zh-CN": "+{n} 毫升", en: "+{n} ml" },
+  reset: { "zh-TW": "重置今日", "zh-CN": "重置今日", en: "Reset today" },
+  empty: { "zh-TW": "—", "zh-CN": "—", en: "—" },
+  notifTitle: { "zh-TW": "喝水提醒 ☆", "zh-CN": "喝水提醒 ☆", en: "Water Reminder ☆" },
+  bodyMl: {
+    "zh-TW": "今天已 {ml} / {goal} 毫升，再喝一口嘛～",
+    "zh-CN": "今天已 {ml} / {goal} 毫升，再喝一口嘛～",
+    en: "{ml} of {goal} ml today — one more sip?",
+  },
+  bodyCup: {
+    "zh-TW": "今天已經 {n} 杯啦，再喝一杯嘛～",
+    "zh-CN": "今天已经 {n} 杯啦，再喝一杯嘛～",
+    en: "{n} cups today — one more?",
+  },
+  bodyDue: {
+    "zh-TW": "該喝杯水啦，主人～不喝水我會擔心的哦💧",
+    "zh-CN": "该喝杯水啦，主人～不喝水的话，我会担心你的哦💧",
+    en: "Time for a glass of water~ I'd worry about you if you skip it💧",
+  },
+};
+
+// 纯文字直接挑语言，带占位符的先挑再替换
+function tr(key, vars) {
+  let s = widget.t(TPL[key]);
+  if (vars) for (const k in vars) s = s.split("{" + k + "}").join(String(vars[k]));
+  return s;
+}
+
 function today() {
   return new Date().toDateString();
 }
@@ -77,52 +114,91 @@ function fmtCups() {
   return (ml / cupMl()).toLocaleString(widget.locale, { maximumFractionDigits: 1 });
 }
 
-// 每日补水的好处：每次提醒随机挑一条放进通知
+// 每日补水的好处：每次提醒随机挑一条
 // 二次元风格小贴士：健康知识 + 萌系语气
 const TIPS = [
-  "喝水能促进新陈代谢，帮助身体排毒～身体轻盈得像要飘起来一样☆",
-  "充足的水分让皮肤更水润有光泽，变成发光的美少女✨",
-  "补水有助于大脑保持清醒、提升专注力，头脑转得像超算一样快☆",
-  "多喝水能润滑关节，减少久坐的僵硬感，身体软软的很舒服～",
-  "水分充足可以帮助调节体温，夏天不易中暑，元气满满度过每一天☆",
-  "饭前喝点水有助于消化，也能避免正餐吃过量，身材也更好保持啦☆",
-  "多喝水能预防结石，给肾脏减减负，内脏也要好好疼爱哦～",
-  "轻度脱水就会让人疲劳头痛，别等渴了才喝，要像充电一样定时补水☆",
-  "喝水能保持呼吸道湿润，嗓子更舒服，唱歌也更动听啦♪",
-  "充足水分让血液循环更顺畅，精力更充沛，一整天都活力全开☆",
+  {
+    "zh-TW": "喝水能促進新陳代謝，幫助身體排毒～身體輕盈得像要飄起來一樣☆",
+    "zh-CN": "喝水能促进新陈代谢，帮助身体排毒～身体轻盈得像要飘起来一样☆",
+    en: "Water boosts your metabolism and helps flush things out — light as a feather☆",
+  },
+  {
+    "zh-TW": "充足的水分讓皮膚更水潤有光澤，變成發光的美少女✨",
+    "zh-CN": "充足的水分让皮肤更水润有光泽，变成发光的美少女✨",
+    en: "Enough water keeps your skin dewy and glowing✨",
+  },
+  {
+    "zh-TW": "補水有助於大腦保持清醒、提升專注力，頭腦轉得像超算一樣快☆",
+    "zh-CN": "补水有助于大脑保持清醒、提升专注力，头脑转得像超算一样快☆",
+    en: "Hydration keeps your head clear and focused — quick as a supercomputer☆",
+  },
+  {
+    "zh-TW": "多喝水能潤滑關節，減少久坐的僵硬感，身體軟軟的很舒服～",
+    "zh-CN": "多喝水能润滑关节，减少久坐的僵硬感，身体软软的很舒服～",
+    en: "Drinking more lubricates your joints and eases the stiffness of sitting all day~",
+  },
+  {
+    "zh-TW": "水分充足可以幫助調節體溫，夏天不易中暑，元氣滿滿度過每一天☆",
+    "zh-CN": "水分充足可以帮助调节体温，夏天不易中暑，元气满满度过每一天☆",
+    en: "Good hydration helps regulate body temperature and keeps you going all summer☆",
+  },
+  {
+    "zh-TW": "飯前喝點水有助於消化，也能避免正餐吃過量，身材也更好保持啦☆",
+    "zh-CN": "饭前喝点水有助于消化，也能避免正餐吃过量，身材也更好保持啦☆",
+    en: "A glass before meals aids digestion and keeps you from overeating☆",
+  },
+  {
+    "zh-TW": "多喝水能預防結石，給腎臟減減負，內臟也要好好疼愛哦～",
+    "zh-CN": "多喝水能预防结石，给肾脏减减负，内脏也要好好疼爱哦～",
+    en: "Plenty of water helps prevent kidney stones — be kind to your kidneys~",
+  },
+  {
+    "zh-TW": "輕度脫水就會讓人疲勞頭痛，別等渴了才喝，要像充電一樣定時補水☆",
+    "zh-CN": "轻度脱水就会让人疲劳头痛，别等渴了才喝，要像充电一样定时补水☆",
+    en: "Even mild dehydration brings fatigue and headaches — sip on a schedule, like recharging☆",
+  },
+  {
+    "zh-TW": "喝水能保持呼吸道濕潤，嗓子更舒服，唱歌也更動聽啦♪",
+    "zh-CN": "喝水能保持呼吸道湿润，嗓子更舒服，唱歌也更动听啦♪",
+    en: "Water keeps your throat moist — and your singing sweeter♪",
+  },
+  {
+    "zh-TW": "充足水分讓血液循環更順暢，精力更充沛，一整天都活力全開☆",
+    "zh-CN": "充足水分让血液循环更顺畅，精力更充沛，一整天都活力全开☆",
+    en: "Good hydration keeps circulation smooth and your energy high all day☆",
+  },
 ];
 function tip() {
-  return TIPS[Math.floor(Math.random() * TIPS.length)];
+  return widget.t(TIPS[Math.floor(Math.random() * TIPS.length)]);
 }
 
 function paint() {
   const isMl = mode() === "ml";
   const g = goalMl();
+  $("title").textContent = tr("title");
+  $("reset").textContent = tr("reset");
   $("cups").textContent = isMl ? fmt(ml) : fmtCups();
-  $("goal").textContent = isMl ? `/ ${fmt(g)} 毫升` : `/ ${fmt(g / cupMl())} 杯`;
+  $("goal").textContent = isMl ? tr("goalMl", { n: fmt(g) }) : tr("goalCup", { n: fmt(g / cupMl()) });
   $("bar").style.width = Math.min(100, (ml / g) * 100) + "%";
-  $("drink").textContent = isMl ? `+${fmt(cupMl())} 毫升` : "喝水了";
+  $("drink").textContent = isMl ? tr("drinkMl", { n: fmt(cupMl()) }) : tr("drinkCup");
 
-  if (!lastDrink) { $("next").textContent = "—"; return; }
+  if (!lastDrink) { $("next").textContent = tr("empty"); return; }
   const left = lastDrink + intervalMs() - Date.now();
   if (left <= 0) {
-    $("next").textContent = "该喝水啦！";
+    $("next").textContent = tr("due");
     if (!quietNow()) {
       // 到点只弹一次通知：每 30 秒刷新会重复进这里，弹过或已预约过都不再弹
       if (!paint._notified && !paint._scheduled) {
         paint._notified = true;
-        widget.notify({
-          title: "喝水提醒 ☆",
-          body: (isMl
-            ? `今天已 ${fmt(ml)} / ${fmt(g)} 毫升，再喝一口嘛～`
-            : `今天已经 ${fmtCups()} 杯啦，再喝一杯嘛～`) + `\n💧 ${tip()}`,
-          tag: TAG,
-        });
+        const line = isMl
+          ? tr("bodyMl", { ml: fmt(ml), goal: fmt(g) })
+          : tr("bodyCup", { n: fmtCups() });
+        widget.notify({ title: tr("notifTitle"), body: `${line}\n💧 ${tip()}`, tag: TAG });
       }
     }
   } else {
     const m = Math.ceil(left / MIN);
-    $("next").textContent = m >= 60 ? `${Math.floor(m / 60)} 时 ${m % 60} 分后` : `${m} 分后`;
+    $("next").textContent = m >= 60 ? tr("inHour", { h: Math.floor(m / 60), m: m % 60 }) : tr("inMin", { n: m });
     paint._notified = false;  // 重新计时后允许下一次到点再弹
   }
 }
@@ -135,7 +211,7 @@ function schedule() {
 
   if (at > Date.now() && !quietAt(at)) {
     paint._scheduled = true;
-    widget.notify({ title: "喝水提醒 ☆", body: `该喝杯水啦，主人～不喝水的话，我会担心你的哦💧\n💧 ${tip()}`, at, tag: TAG });
+    widget.notify({ title: tr("notifTitle"), body: `${tr("bodyDue")}\n💧 ${tip()}`, at, tag: TAG });
   } else {
     paint._scheduled = false;
     widget.notify.cancel(TAG);

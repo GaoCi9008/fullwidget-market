@@ -227,12 +227,13 @@ function tick() {
 
 widget.storage.get("intake").then((saved) => {
   if (saved && saved.day === today()) { ml = Number(saved.ml) || 0; return; }
-  // 旧版本只存了 log.cups（单位是当时选的模式），迁移一次
+  // 旧版本只存了 log.cups，没记单位：一次「喝水了」至少是一杯（cupSize 最小 50ml），
+  // 所以小于 50 的一定是杯数，否则就是毫升。不依赖当前模式，切换过也不会算错。
   return widget.storage.get("log").then((old) => {
     if (!old || old.day !== today()) return;
     const n = Number(old.cups) || 0;
     if (!n) return;
-    ml = Math.round(mode() === "ml" ? n : n * cupMl());
+    ml = Math.round(n < 50 ? n * cupMl() : n);
     widget.storage.set("intake", { day: today(), ml });
     widget.storage.remove("log");
   });

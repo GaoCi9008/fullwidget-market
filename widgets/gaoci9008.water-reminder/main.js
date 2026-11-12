@@ -186,20 +186,17 @@ function paint() {
   const left = lastDrink + intervalMs() - Date.now();
   if (left <= 0) {
     $("next").textContent = tr("due");
-    if (!quietNow()) {
-      // 到点只弹一次通知：每 30 秒刷新会重复进这里，弹过或已预约过都不再弹
-      if (!paint._notified && !paint._scheduled) {
-        paint._notified = true;
-        const line = isMl
-          ? tr("bodyMl", { ml: fmt(ml), goal: fmt(g) })
-          : tr("bodyCup", { n: fmtCups() });
-        widget.notify({ title: tr("notifTitle"), body: `${line}\n💧 ${tip()}`, tag: TAG });
-      }
+    // 这一轮（同一次「上次喝水」）只提醒一次：弹过或已预约过都不再弹
+    if (!quietNow() && paint._remindedFor !== lastDrink) {
+      paint._remindedFor = lastDrink;
+      const line = isMl
+        ? tr("bodyMl", { ml: fmt(ml), goal: fmt(g) })
+        : tr("bodyCup", { n: fmtCups() });
+      widget.notify({ title: tr("notifTitle"), body: `${line}\n💧 ${tip()}`, tag: TAG });
     }
   } else {
     const m = Math.ceil(left / MIN);
     $("next").textContent = m >= 60 ? tr("inHour", { h: Math.floor(m / 60), m: m % 60 }) : tr("inMin", { n: m });
-    paint._notified = false;  // 重新计时后允许下一次到点再弹
   }
 }
 
@@ -208,24 +205,38 @@ function schedule() {
   let at = lastDrink + intervalMs();
   // 到点落在免打扰时段里，就顺延到免打扰结束，而不是照样弹
   if (quietAt(at)) at = quietEndAfter(at);
+  paint._bookedLang = widget.locale;
 
   if (at > Date.now() && !quietAt(at)) {
-    paint._scheduled = true;
+    paint._remindedFor = lastDrink;   // 这一轮已预约，paint 不再补弹
     widget.notify({ title: tr("notifTitle"), body: `${tr("bodyDue")}\n💧 ${tip()}`, at, tag: TAG });
   } else {
-    paint._scheduled = false;
     widget.notify.cancel(TAG);
+    // 已经过了点：提醒要么早弹过、要么就是现在，不再事后补一条
+    if (at <= Date.now() && !quietNow()) paint._remindedFor = lastDrink;
   }
 }
 
 function tick() {
   // 跨天自动清零
   if (day !== today()) { day = today(); ml = 0; widget.storage.set("intake", { day, ml }); }
+  // 语言变了就重排一次，已预约的通知换成新语言
+  if (paint._bookedLang && paint._bookedLang !== widget.locale) schedule();
   paint();
 }
 
 widget.storage.get("intake").then((saved) => {
-  if (saved && saved.day === today()) ml = Number(saved.ml) || 0;
+  if (saved && saved.day === today()) { ml = Number(saved.ml) || 0; return; }
+  // 旧版本只存了 log.cups（单位是当时选的模式），迁移一次
+  return widget.storage.get("log").then((old) => {
+    if (!old || old.day !== today()) return;
+    const n = Number(old.cups) || 0;
+    if (!n) return;
+    ml = Math.round(mode() === "ml" ? n : n * cupMl());
+    widget.storage.set("intake", { day: today(), ml });
+    widget.storage.remove("log");
+  });
+}).then(() => {
   day = today();
   return widget.storage.get("last");
 }).then((last) => {

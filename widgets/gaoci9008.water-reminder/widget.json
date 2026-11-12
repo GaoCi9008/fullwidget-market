@@ -23,7 +23,6 @@
     { "key": "cupSize", "type": "number", "label": { "zh-TW": "每杯毫升數", "zh-CN": "每杯毫升数", "en": "Milliliters per cup" }, "min": 50, "max": 1000, "step": 50, "default": 250 },
     { "key": "goalMl", "type": "number", "label": { "zh-TW": "今日目標（毫升）", "zh-CN": "今日目标（毫升）", "en": "Daily goal (ml)" }, "min": 200, "max": 6000, "step": 100, "default": 2000 },
     { "key": "interval", "type": "slider", "label": { "zh-TW": "提醒間隔（分鐘）", "zh-CN": "提醒间隔（分钟）", "en": "Remind every (minutes)" }, "min": 15, "max": 120, "step": 5, "default": 45 },
-    { "key": "sound", "type": "toggle", "label": { "zh-TW": "到點提示音", "zh-CN": "到点提示音", "en": "Chime when due" }, "default": true },
     { "key": "quietStart", "type": "text", "label": { "zh-TW": "免打擾開始", "zh-CN": "免打扰开始", "en": "Quiet from" }, "placeholder": "23:00", "default": "23:00" },
     { "key": "quietEnd", "type": "text", "label": { "zh-TW": "免打擾結束", "zh-CN": "免打扰结束", "en": "Quiet until" }, "placeholder": "07:00", "default": "07:00" }
   ]

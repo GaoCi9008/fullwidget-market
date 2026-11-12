@@ -1,7 +1,7 @@
 // 喝水提醒：到点弹 Windows 通知；点按钮记录（按杯数或按毫升），进度和计数重启也在。
 // 计数统一用毫升保存，切换「按杯数 / 按毫升」不会混算。
 const $ = (id) => document.getElementById(id);
-const TAG = "water";
+const TAG = "water:" + widget.instanceId;   // 每个实例独立，免得同时放两个组件时互相取消通知
 const MIN = 60 * 1000;
 
 let ml = 0;        // 今天累计喝了多少毫升
